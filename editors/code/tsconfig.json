@@ -12,13 +12,9 @@
         "noImplicitReturns": true,
         "noPropertyAccessFromIndexSignature": true,
         "noUnusedParameters": true,
-        "baseUrl": ".",
-        "paths": {
-            "@server/*": ["src/*"],
-            "@shared/*": ["shared/src/*"]
-        }
+        "baseUrl": "."
     },
-    "include": ["src/**/*"],
-    "exclude": [".node_modules", ".vscode-test"],
+    "include": ["./src"],
+    "exclude": ["./node_modules", ".vscode-test"],
     "references": [{"path": "./src"}]
 }

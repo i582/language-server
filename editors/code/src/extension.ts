@@ -15,9 +15,9 @@ import {
     GetTypeAtPositionParams,
     GetTypeAtPositionRequest,
     GetTypeAtPositionResponse,
-} from "@shared/shared-msgtypes"
+} from "./msgtypes"
 import {Location, Position} from "vscode-languageclient"
-import {ClientOptions} from "@shared/config-scheme"
+import {ClientOptions} from "./config-scheme"
 
 let client: LanguageClient
 

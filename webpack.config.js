@@ -15,8 +15,8 @@ const config = {
     target: "node", // vscode extensions run in webworker context for VS Code web 📖 -> https://webpack.js.org/configuration/target/#target
 
     entry: {
-        server: "./server/src/server.ts",
-        client: "./client/src/extension.ts",
+        server: "./src/server.ts",
+        client: "./editors/code/src/extension.ts",
     }, // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
     output: {
         // the bundle is stored in the 'dist' folder (check package.json), 📖 -> https://webpack.js.org/configuration/output/
@@ -58,9 +58,9 @@ const config = {
                 {from: "./stubs/stubs.tact", to: path.join(distDir, "stubs")},
                 {from: "./tree-sitter-tact/tree-sitter-tact.wasm", to: distDir},
                 {from: "./tree-sitter-fift/tree-sitter-fift.wasm", to: distDir},
-                {from: "./ton-icon.svg", to: distDir},
+                {from: "./editors/code/ton-icon.svg", to: distDir},
                 {
-                    from: "server/src/completion/data/asm.json",
+                    from: "src/completion/data/asm.json",
                     to: distDir,
                 },
             ],

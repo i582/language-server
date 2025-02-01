@@ -8,7 +8,7 @@ test-workspace/
 *.wasm
 
 # tests
-server/src/e2e/out
+src/e2e/out
 
 # yarn
 yarn-error.log
