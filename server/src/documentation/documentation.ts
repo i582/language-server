@@ -83,7 +83,28 @@ export function generateDocFor(node: NamedNode): string | null {
             const inheritedString = inherited.length > 0 ? ` with ${inherited}` : ``
             const doc = extractCommentsDoc(node)
 
-            return defaultResult(`trait ${node.name()}${inheritedString}`, doc)
+            const constants = trait
+                .ownConstants()
+                .map(it => "    " + generateMemberDocFor(it))
+                .filter(it => it !== null)
+                .join("\n")
+
+            const fields = trait
+                .ownFields()
+                .map(it => "    " + generateMemberDocFor(it))
+                .filter(it => it !== null)
+                .join("\n")
+
+            const methods = trait
+                .ownMethods()
+                .map(it => "    " + generateMemberDocFor(it))
+                .filter(it => it !== null)
+                .join("\n")
+
+            const parts = [constants, fields, methods].filter(it => it !== "")
+            const body = parts.length > 0 ? `{\n${parts.join("\n\n")}\n}` : "{}"
+
+            return defaultResult(`trait ${node.name()}${inheritedString} ${body}`, doc)
         }
         case "struct": {
             const doc = extractCommentsDoc(node)
@@ -161,6 +182,43 @@ export function generateDocFor(node: NamedNode): string | null {
             const type = TypeInferer.inferType(node)
             const typeName = type?.qualifiedName() ?? "unknown"
             return defaultResult(`${node.name()}: ${typeName}`)
+        }
+    }
+
+    return null
+}
+
+function generateMemberDocFor(node: NamedNode): string | null {
+    const astNode = node.node
+    switch (astNode.type) {
+        case "storage_function": {
+            const func = new Fun(astNode, node.file)
+            return `${func.modifiers()}fun ${node.name()}${func.signatureText()}`
+        }
+        case "global_constant":
+        case "storage_constant": {
+            const constant = new Constant(astNode, node.file)
+            const type = constant.typeNode()?.type()?.qualifiedName() ?? "unknown"
+            if (!type) return null
+
+            const value = constant.value()
+            if (!value) return null
+
+            return `${constant.modifiers()}const ${node.name()}: ${type} = ${value.node.text};`
+        }
+        case "storage_variable":
+        case "field": {
+            const name = astNode.childForFieldName("name")!
+            const field = new NamedNode(name, node.file)
+            const type = TypeInferer.inferType(field)?.qualifiedName() ?? "unknown"
+
+            const defaultValueNode = astNode.childForFieldName("value")
+            let defaultValue = defaultValueNode?.text ?? ""
+            if (defaultValue != "") {
+                defaultValue = ` = ${defaultValue}`
+            }
+
+            return `${node.name()}: ${type}${defaultValue};`
         }
     }
 
